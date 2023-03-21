@@ -4,6 +4,7 @@ using GenshinApplication.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenshinApplication.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230319042538_moreTables")]
+    partial class moreTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,14 +25,29 @@ namespace GenshinApplication.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BuildCharacters", b =>
+                {
+                    b.Property<Guid>("BuildId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CharactersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BuildId", "CharactersId");
+
+                    b.HasIndex("CharactersId");
+
+                    b.ToTable("BuildCharacters");
+                });
+
             modelBuilder.Entity("GenshinApplication.Models.Artifacts", b =>
                 {
                     b.Property<Guid>("ArtifactsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Set")
                         .HasColumnType("nvarchar(max)");
@@ -40,10 +58,9 @@ namespace GenshinApplication.Migrations
                     b.Property<string>("SetBonusTwo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Stars")
-                        .HasColumnType("int");
-
                     b.HasKey("ArtifactsId");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Artifacts");
                 });
@@ -52,9 +69,6 @@ namespace GenshinApplication.Migrations
                 {
                     b.Property<Guid>("BuildId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CharactersId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CircletArtifactsId")
@@ -76,8 +90,6 @@ namespace GenshinApplication.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("BuildId");
-
-                    b.HasIndex("CharactersId");
 
                     b.HasIndex("CircletArtifactsId");
 
@@ -115,38 +127,31 @@ namespace GenshinApplication.Migrations
                     b.Property<int>("NumberOfStars")
                         .HasColumnType("int");
 
-                    b.Property<int>("WeaponType")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("WeaponTypeWeaponId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CharactersId");
+
+                    b.HasIndex("WeaponTypeWeaponId");
 
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("GenshinApplication.Models.Constelation", b =>
+            modelBuilder.Entity("GenshinApplication.Models.Items", b =>
                 {
-                    b.Property<Guid>("ConstelationId")
+                    b.Property<Guid>("ItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CharactersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Effect")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Number")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
 
-                    b.HasKey("ConstelationId");
+                    b.HasKey("ItemId");
 
-                    b.HasIndex("CharactersId")
-                        .IsUnique();
-
-                    b.ToTable("Constelation");
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("GenshinApplication.Models.Users", b =>
@@ -181,23 +186,42 @@ namespace GenshinApplication.Migrations
                     b.Property<string>("Effect")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Stars")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("WeaponId");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Weapons");
                 });
 
+            modelBuilder.Entity("BuildCharacters", b =>
+                {
+                    b.HasOne("GenshinApplication.Models.Build", null)
+                        .WithMany()
+                        .HasForeignKey("BuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GenshinApplication.Models.Characters", null)
+                        .WithMany()
+                        .HasForeignKey("CharactersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GenshinApplication.Models.Artifacts", b =>
+                {
+                    b.HasOne("GenshinApplication.Models.Items", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId");
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("GenshinApplication.Models.Build", b =>
                 {
-                    b.HasOne("GenshinApplication.Models.Characters", null)
-                        .WithMany("Build")
-                        .HasForeignKey("CharactersId");
-
                     b.HasOne("GenshinApplication.Models.Artifacts", "Circlet")
                         .WithMany()
                         .HasForeignKey("CircletArtifactsId");
@@ -235,22 +259,22 @@ namespace GenshinApplication.Migrations
                     b.Navigation("Weapon");
                 });
 
-            modelBuilder.Entity("GenshinApplication.Models.Constelation", b =>
-                {
-                    b.HasOne("GenshinApplication.Models.Characters", "Characters")
-                        .WithOne("Constelation")
-                        .HasForeignKey("GenshinApplication.Models.Constelation", "CharactersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Characters");
-                });
-
             modelBuilder.Entity("GenshinApplication.Models.Characters", b =>
                 {
-                    b.Navigation("Build");
+                    b.HasOne("GenshinApplication.Models.Weapon", "WeaponType")
+                        .WithMany()
+                        .HasForeignKey("WeaponTypeWeaponId");
 
-                    b.Navigation("Constelation");
+                    b.Navigation("WeaponType");
+                });
+
+            modelBuilder.Entity("GenshinApplication.Models.Weapon", b =>
+                {
+                    b.HasOne("GenshinApplication.Models.Items", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId");
+
+                    b.Navigation("Item");
                 });
 #pragma warning restore 612, 618
         }

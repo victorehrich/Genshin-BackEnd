@@ -17,5 +17,11 @@ namespace GenshinApplication.DataContext
         }
 
         public DbSet<Users> Users { get; set; }
+        public DbSet<Artifacts> Artifacts { get; set; }
+        public DbSet<Weapon> Weapons { get; set; }
+        public DbSet<Build> Build { get; set; }
+        public DbSet<Constelation> Constelation { get; set; }
+        public DbSet<Characters> Characters { get; set; }
+
     }
 }

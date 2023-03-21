@@ -23,6 +23,8 @@ var configuration = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Users, PostUsersDto>();
     cfg.CreateMap<PostUsersDto, Users>();
+    cfg.CreateMap<Characters, CharactersPostDto>();
+    cfg.CreateMap<CharactersPostDto, Characters>();
 
 });
 IMapper mapper = configuration.CreateMapper();
