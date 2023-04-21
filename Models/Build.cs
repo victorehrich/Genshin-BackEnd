@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GenshinApplication.Models
@@ -8,12 +9,13 @@ namespace GenshinApplication.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid BuildId { get; set; }
-        public Artifacts Flower { get; set; }
-        public Artifacts Plume { get; set; }
-        public Artifacts Sands { get; set; }
-        public Artifacts Goblet { get; set; }
-        public Artifacts Circlet { get; set; }
-        public Weapon Weapon { get; set; }
+        public Set SetOne { get; set; }
+        public Set? SetTwo { get; set; }
+        public List<Weapon> Weapon { get; set; }
+        public Status SandMainStatus { get; set; }
+        public Status GobletMainStatus { get; set; }
+        public Status CircletMainStatus { get; set; }
+        public List<Status> Substatus { get; set; }
 
     }
 }

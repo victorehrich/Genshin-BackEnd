@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
-using GenshinApplication.DataContext.Interfaces;
-using GenshinApplication.Repositories;
+using GenshinApplication.DataContext;
 using GenshinApplication.Repositories.Interfaces;
-
-namespace GenshinApplication.DataContext
+namespace GenshinApplication.Repositories
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private bool disposed = false;
 
         private readonly DataBaseContext _context;
-
-        public UserRepository usersRepository = null;
 
         public CharactersRepository charactersRepository = null;
 
@@ -22,7 +18,6 @@ namespace GenshinApplication.DataContext
         public BuildRepository buildRepository = null;
 
         public ConstelationRepository constelationRepository = null;
-
 
         public UnitOfWork(DataBaseContext context)
         {
@@ -42,25 +37,13 @@ namespace GenshinApplication.DataContext
             }
         }
 
-        public UserRepository UsersRepository
-        {
-            get
-            {
-                if (usersRepository == null)
-                {
-                    usersRepository = new UserRepository(_context);
-                }
-                return usersRepository;
-            }
-        }
-
         public WeaponRepository WeaponRepository
         {
             get
             {
                 if (weaponRepository == null)
                 {
-                    weaponRepository = new WeaponRepository();
+                    weaponRepository = new WeaponRepository(_context);
                 }
                 return weaponRepository;
             }
@@ -72,7 +55,7 @@ namespace GenshinApplication.DataContext
             {
                 if (buildRepository == null)
                 {
-                    buildRepository = new BuildRepository();
+                    buildRepository = new BuildRepository(_context);
                 }
                 return buildRepository;
             }
@@ -84,7 +67,7 @@ namespace GenshinApplication.DataContext
             {
                 if (artifactsRepository == null)
                 {
-                    artifactsRepository = new ArtifactsRepository();
+                    artifactsRepository = new ArtifactsRepository(_context);
                 }
                 return artifactsRepository;
             }

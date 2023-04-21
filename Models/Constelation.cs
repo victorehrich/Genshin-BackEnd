@@ -9,10 +9,8 @@ namespace GenshinApplication.Models
         [Key]
         public Guid ConstelationId { get; set; }
         public string Name { get; set; }
-        public string Number { get; set; }
+        public ConstellationLevelEnum ContellationLevel { get; set; }
         public string Effect { get; set; }
-        public Guid CharactersId { get; set; }
-
-        public Characters Characters { get; set; }
+        public virtual Characters Characters { get; set; }
     }
 }

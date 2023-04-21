@@ -1,29 +1,34 @@
 ﻿using GenshinApplication.Models;
 using GenshinApplication.Repositories.Interfaces;
 using GenshinApplication.DataContext;
-using Microsoft.EntityFrameworkCore;
-using GenshinApplication.Models.DTO.POST;
-using AutoMapper;
+
 
 namespace GenshinApplication.Repositories
 {
-    public class ConstelationRepository : IConstelationRepository
+    public class ConstelationRepository : Repository<Constelation>, IConstelationRepository
     {
-        private DataBaseContext _context;
-        private readonly IMapper _mapper;
-        public ConstelationRepository(DataBaseContext context)
+        private readonly DataBaseContext _context;
+
+        public ConstelationRepository(DataBaseContext context) : base(context)
         {
             _context = context;
         }
 
         public Constelation AddConstelation(Guid charactersId, Constelation constelation)
         {
-            throw new NotImplementedException();
+            _context.Constelation.Add(constelation);
+
+            return constelation;
         }
 
-        public IEnumerable<Constelation> GetAllConstelations(Guid charactersId)
+        public IEnumerable<Constelation> GetAllCharacterConstelations(Guid charactersId)
         {
-            throw new NotImplementedException();
+            var query = from c in _context.Constelation
+                        where c.Characters.CharactersId.Equals(charactersId)
+                        select c;
+            List<Constelation> constellations = new List < Constelation >(query);
+
+            return constellations;
         }
 
         public Constelation GetConstelationById(Guid charactersId, Guid constelationId)

@@ -3,14 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GenshinApplication.Models
 {
-    public class Artifacts
+    public class WeaponPostDTO
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public Guid ArtifactsId { get; set; }
-        public Set Set { get; set; }
+        public string Effect { get; set; }
         public string Name { get; set; }
-        public ArtifactsTypeEnum ArtifactsType { get; set; }
         public NumberOfStarsEnum Stars { get; set; }
+
     }
 }
